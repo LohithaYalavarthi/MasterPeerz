@@ -17,3 +17,31 @@ git branch
 // to switch from one branch to another
 
 git checkout [branch name]	Switch to a branch
+
+git checkout master
+
+git branch
+
+
+git checkout feature/task1
+
+git commit -m "first commit"
+
+git log
+
+
+CLS for clearing command Prompt
+
+// TO merge the branch changes to master
+
+We need to switch to master branch
+
+git checkout master
+
+git merge feature/task1 - this merges master to particular branch feature/task1
+
+
+
+//push branch into git repository
+
+git push origin feature/task1
