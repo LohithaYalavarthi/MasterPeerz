@@ -1,0 +1,19 @@
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/LohithaYalavarthi/Task2.git
+git push -u origin master
+git remote add origin https://github.com/LohithaYalavarthi/Task2.git
+git push -u origin master
+
+
+//Create a branch
+git branch [branch name]
+
+//  for knowing what are the branches
+git branch
+
+
+// to switch from one branch to another
+
+git checkout [branch name]	Switch to a branch
