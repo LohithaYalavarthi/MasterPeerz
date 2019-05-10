@@ -1,0 +1,118 @@
+https://github.com/prescottprue/react-redux-firebase/blob/master/docs/firestore.md
+https://react-redux-firebase.com/docs/firestore.html
+
+How to create FireBase
+
+import { reactReduxFirebase, getFirebase } from 'react-redux-firebase'
+import { reduxFirestore,getFirestore} from 'redux-firestore';
+import 'firebase/firestore';
+import 'firebase/auth';
+
+
+
+//This s compulsory you need config yur firebase to app,so config need to get from firebase
+firebase.initializeApp(fbConfig)
+
+const store = createStore(reducers, 
+  compose(
+   reduxFirestore(firebase,rrfConfig),
+   reactReduxFirebase(firebase, rrfConfig),
+   applyMiddleware(thunk.withExtraArgument({getFirestore}))
+));
+
+
+For adding in the Firebase
+
+In action creater 
+export default function SaveUserDetails(userDet){
+  return (dispatch, getState, {getFirestore}) => {
+      const firestore = getFirestore();
+      firestore.collection('Users').add({
+         username : userDet.name,
+         password : userDet.pass
+       }).then(() => {
+         dispatch({ type: 'User-AnotherTry', userDet });
+       }).catch(err => {
+         dispatch({ type: 'CREATE_PROJECT_ERROR' }, err);
+       });
+   }
+}
+querying from the firebase
+import { firestoreConnect } from 'react-redux-firebase';
+firestoreConnect(props => [
+          { collection: 'Users' }
+        ])
+
+
+
+querying from the firebase
+const mapFirestoreToRedux = props => {
+  return [
+    {
+      collection: 'questions',
+      storeAs: `questions`
+    },
+    {
+      collection: 'mentors',
+      storeAs: `mentors`
+    }
+  ]
+}
+
+export default compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  firestoreConnect(mapFirestoreToRedux)
+)(DashboardPage)
+
+
+If wanted to get from firestore we are using the 
+const mapStateToProps = state => {
+  return {
+    users: state.firestore.ordered.users,
+    mentors: state.firestore.ordered.mentors,
+    questions: state.firestore.ordered.questions
+  }
+}
+
+To get from the firebase we can use , In actions field
+
+export const getQuestions = () => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    // make async call to database
+    const firebase = getFirestore()
+    return new Promise((resolve, reject) => {
+      firebase
+        .get({ collection: 'questions' })
+        .then(result => {
+          console.log('question details ??? ', result)
+          dispatch({ type: 'GET_QUESTIONS_SUCCESS' })
+          resolve('GET_QUESTIONS_SUCCESS')
+        })
+        .catch(err => {
+          dispatch({ type: 'GET_QUESTIONS_ERROR' }, err)
+          reject('GET_QUESTIONS_ERROR')
+        })
+    })
+  }
+}
+
+
+export default compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  firestoreConnect(mapFirestoreToRedux)
+)(DashboardPage)
+
+import { firebaseReducer } from 'react-redux-firebase'
+import {  firestoreReducer } from 'redux-firestore'
+// dont forget this one for sure if wanted to query means
+const rootReducer = combineReducers({
+  SaveData : SaveData,
+  firebase: firebaseReducer,
+  firestore: firestoreReducer
+});
